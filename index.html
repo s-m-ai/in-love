@@ -2,13 +2,14 @@
 <html lang="th">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>คุณชอบฉันไหม? 💖</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&family=Itim&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; overflow: hidden; }
 
         body {
             background: #fff0f5;
@@ -17,28 +18,29 @@
                 radial-gradient(circle at 85% 85%, rgba(255, 200, 225, 0.40), transparent 45%),
                 radial-gradient(circle at 50% 50%, rgba(255, 240, 248, 0.9), transparent 70%);
             font-family: 'Mali', 'Itim', 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0;
             color: #4a2436;
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
+            min-height: 100dvh;
         }
 
         /* ===== หน้าโหลด ===== */
         .loading-screen {
             position: fixed;
             top: 0; left: 0;
-            height: 100vh; width: 100vw;
+            height: 100vh; height: 100dvh;
+            width: 100vw; width: 100dvw;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             background: linear-gradient(180deg, #fff5fa 0%, #ffe4ee 100%);
             z-index: 3;
+            padding: 16px;
         }
         .loading-title {
             font-family: 'Mali', cursive;
-            font-size: 26px;
-            font-weight: 700;
+            font-size: 26px; font-weight: 700;
             color: #ff6fa5;
             margin-bottom: 10px;
             text-shadow: 0 2px 12px rgba(255, 111, 165, 0.25);
@@ -50,13 +52,11 @@
         }
         .loading-subtitle {
             font-family: 'Itim', 'Mali', cursive;
-            font-size: 15px;
-            color: #c97a9b;
+            font-size: 15px; color: #c97a9b;
             margin-bottom: 28px;
         }
         .spinner {
-            width: 56px;
-            height: 56px;
+            width: 56px; height: 56px;
             border: 4px solid #ffd9e7;
             border-top: 4px solid #ff7fb0;
             border-right: 4px solid #ff9cc4;
@@ -68,21 +68,14 @@
             0%   { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* ===== Progress ===== */
         .progress-container {
-            width: 85%;
-            max-width: 360px;
-            height: 10px;
-            background: #ffe0ec;
-            border-radius: 10px;
-            margin-top: 26px;
-            overflow: hidden;
+            width: 85%; max-width: 360px; height: 10px;
+            background: #ffe0ec; border-radius: 10px;
+            margin-top: 26px; overflow: hidden;
             box-shadow: inset 0 1px 3px rgba(255, 127, 176, 0.15);
         }
         .progress-bar {
-            height: 100%;
-            width: 0%;
+            height: 100%; width: 0%;
             background: linear-gradient(90deg, #ff9cc4, #ff6fa5, #ffb3d1);
             border-radius: 10px;
             transition: width 0.3s ease;
@@ -90,15 +83,12 @@
         }
         .progress-text {
             font-family: 'Mali', cursive;
-            font-size: 14px;
-            font-weight: 700;
-            color: #ff6fa5;
-            margin-top: 12px;
+            font-size: 14px; font-weight: 700;
+            color: #ff6fa5; margin-top: 12px;
         }
         .progress-status {
             font-family: 'Itim', cursive;
-            font-size: 13px;
-            color: #c991ae;
+            font-size: 13px; color: #c991ae;
             margin-top: 6px;
         }
 
@@ -106,7 +96,8 @@
         .overlay {
             position: fixed;
             top: 0; left: 0;
-            height: 100vh; width: 100vw;
+            height: 100vh; height: 100dvh;
+            width: 100vw; width: 100dvw;
             display: none;
             align-items: center;
             justify-content: center;
@@ -116,7 +107,6 @@
             z-index: 2;
             padding: 16px;
         }
-
         .cookie-card {
             background: #ffffff;
             border-radius: 26px;
@@ -129,13 +119,10 @@
             animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             text-align: center;
-            /* กรอบเส้นประรอบการ์ด */
             border: 3px dashed #ffb6d3;
             outline: 2px dashed #ffd9e7;
             outline-offset: 6px;
         }
-
-        /* หัวใจตกแต่งมุมการ์ด */
         .cookie-card::before,
         .cookie-card::after {
             content: '💖';
@@ -150,42 +137,29 @@
             0%, 100% { transform: translateY(0) rotate(-8deg); }
             50%      { transform: translateY(-10px) rotate(8deg); }
         }
-
         @keyframes popIn {
             0%   { transform: scale(0.85); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-
-        /* ===== หัวข้อใหญ่ ===== */
         .cookie-title {
             font-family: 'Mali', cursive;
-            font-size: 30px;
-            font-weight: 700;
+            font-size: 30px; font-weight: 700;
             color: #ff5a92;
             margin: 0 0 32px 0;
-            letter-spacing: 0.005em;
             line-height: 1.3;
             text-shadow: 0 2px 12px rgba(255, 111, 165, 0.2);
         }
-
-        /* ===== ปุ่ม ===== */
-        .cookie-buttons {
-            display: flex;
-            gap: 12px;
-        }
+        .cookie-buttons { display: flex; gap: 12px; }
         .btn {
             flex: 1;
             font-family: 'Mali', cursive;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 16px; font-weight: 700;
             padding: 14px 20px;
             border-radius: 16px;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 2px solid transparent;
-            letter-spacing: 0.01em;
         }
-
         .btn-primary {
             background: linear-gradient(135deg, #ff9cc4, #ff6fa5);
             color: #ffffff;
@@ -201,7 +175,6 @@
             transform: translateY(0) scale(0.98);
             box-shadow: 0 3px 10px rgba(255, 111, 165, 0.4);
         }
-
         .btn-secondary {
             background: #fff5fa;
             color: #d16697;
@@ -218,35 +191,63 @@
             background: #ffdceb;
         }
 
-        /* ===== Scare ===== */
+        /* ===== SCARE — วิดีโอเต็มจอ ไม่มีขอบดำ ===== */
         .scare {
             position: fixed;
             top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            width: 100vw; width: 100dvw;
+            height: 100vh; height: 100dvh;
             z-index: 1;
             display: none;
             background: #000;
+            overflow: hidden;
+            padding: 0; margin: 0; border: none;
         }
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+
+        /* 🔑 วิดีโอ: ใช้ JS คำนวณ scale จาก aspect ratio จริง */
+        #scare video,
+        video#video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            width: 100dvw;
+            height: 100vh;
+            height: 100dvh;
+            max-width: none;
+            max-height: none;
+            object-fit: cover !important;
+            object-position: center center;
             display: block;
+            background: #000;
+            /* scale เริ่มต้น — JS จะอัปเดตค่านี้อีกที */
+            transform: translate(-50%, -50%) scale(1);
+            transform-origin: center center;
+            will-change: transform;
+            pointer-events: none;
         }
 
-        /* ===== Fullscreen (ทุก vendor) ===== */
-        #scare:fullscreen          { width: 100vw; height: 100vh; background: #000; }
-        #scare:-webkit-full-screen { width: 100vw; height: 100vh; background: #000; }
-        #scare:-moz-full-screen    { width: 100vw; height: 100vh; background: #000; }
-        #scare:-ms-fullscreen      { width: 100vw; height: 100vh; background: #000; }
-
+        /* Fullscreen (ทุก vendor) — เคลียร์ padding/margin ที่เบราว์เซอร์อาจใส่ */
+        #scare:fullscreen,
+        #scare:-webkit-full-screen,
+        #scare:-moz-full-screen,
+        #scare:-ms-fullscreen {
+            width: 100vw !important;   width: 100dvw !important;
+            height: 100vh !important;  height: 100dvh !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            background: #000 !important;
+        }
         #scare:fullscreen video,
         #scare:-webkit-full-screen video,
         #scare:-moz-full-screen video,
         #scare:-ms-fullscreen video {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover;
+            width: 100vw !important;   width: 100dvw !important;
+            height: 100vh !important;  height: 100dvh !important;
+            max-width: none !important;
+            max-height: none !important;
+            object-fit: cover !important;
         }
 
         body.locked {
@@ -292,7 +293,7 @@
             <h2 class="cookie-title">คุณชอบฉันไหม?</h2>
             <div class="cookie-buttons">
                 <button id="decline-button" class="btn btn-secondary">ไม่โว้ยไอกาก</button>
-                <button id="accept-button" class="btn btn-primary">รักนะ 😘</button>
+                <button id="accept-button" class="btn btn-primary">ใช่แล้ว😘</button>
             </div>
         </div>
     </div>
@@ -326,6 +327,44 @@
         let audioSetupDone = false;
 
         /* ================================================================
+           🎬 FIT VIDEO — คำนวณ scale จาก aspect ratio จริง เพื่อไม่ให้มีขอบดำ
+           ================================================================ */
+        function fitVideo() {
+            const vw = video.videoWidth;
+            const vh = video.videoHeight;
+            if (!vw || !vh) return;
+
+            // ใช้ขนาด viewport จริง (innerWidth/innerHeight สะท้อน fullscreen)
+            const sw = window.innerWidth;
+            const sh = window.innerHeight;
+
+            const vRatio = vw / vh;   // เช่น 1920/1080 = 1.778
+            const sRatio = sw / sh;   // เช่น 16/9 = 1.778
+
+            // scale ที่ต้องใช้เพื่อให้วิดีโอ "cover" ทั้งจอ 100%
+            // - ถ้า video กว้างกว่าจอ → ขยายตามความสูง (จะครอปซ้ายขวา)
+            // - ถ้า video สูงกว่าจอ   → ขยายตามความกว้าง (จะครอปบนล่าง)
+            let scale;
+            if (vRatio > sRatio) {
+                scale = vRatio / sRatio;
+            } else {
+                scale = sRatio / vRatio;
+            }
+
+            // crop เพิ่มเล็กน้อย 1.5% เพื่อซ่อนแถบดำฝังในไฟล์ (ถ้ามี)
+            // ปรับเป็น 1.0 ถ้าไม่อยากให้ครอปเพิ่ม
+            scale *= 1.015;
+
+            video.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+
+        // เรียก fitVideo เมื่อ metadata พร้อม / resize / fullscreenchange
+        video.addEventListener('loadedmetadata', fitVideo);
+        video.addEventListener('resize', fitVideo);       // บางเบราว์เซอร์
+        window.addEventListener('resize', fitVideo);
+        window.addEventListener('orientationchange', () => setTimeout(fitVideo, 100));
+
+        /* ================================================================
            FULLSCREEN HELPERS
            ================================================================ */
         function isFullscreen() {
@@ -347,13 +386,9 @@
                 if (typeof el[m] === 'function') {
                     try {
                         const p = el[m].call(el, { navigationUI: 'hide' });
-                        if (p && typeof p.then === 'function') {
-                            p.catch(err => console.log('fullscreen reject:', err));
-                        }
+                        if (p && typeof p.then === 'function') p.catch(() => {});
                         return true;
-                    } catch (e) {
-                        console.log(m, 'error:', e);
-                    }
+                    } catch (e) {}
                 }
             }
             return false;
@@ -373,30 +408,23 @@
                 const xhr = new XMLHttpRequest();
                 xhr.open('GET', DATA_URI_URL, true);
                 xhr.responseType = 'text';
-
-                xhr.onprogress = function(event) {
+                xhr.onprogress = (event) => {
                     if (event.lengthComputable) {
                         const percent = Math.round((event.loaded / event.total) * 100);
                         const scaled  = Math.round(percent * 0.9);
-                        updateProgress(
-                            scaled,
-                            `กำลังโหลด... (${Math.round(event.loaded/1024/1024)} MB / ${Math.round(event.total/1024/1024)} MB)`
-                        );
+                        updateProgress(scaled,
+                            `กำลังโหลด... (${Math.round(event.loaded/1024/1024)} MB / ${Math.round(event.total/1024/1024)} MB)`);
                     } else {
                         updateProgress(45, `กำลังโหลด... (${Math.round(event.loaded/1024/1024)} MB)`);
                     }
                 };
-
-                xhr.onload = function() {
+                xhr.onload = () => {
                     if (xhr.status === 200) {
                         updateProgress(90, 'โหลดครบแล้ว กำลังเตรียมของขวัญ...');
                         resolve(xhr.responseText.trim());
-                    } else {
-                        reject(new Error('HTTP ' + xhr.status));
-                    }
+                    } else reject(new Error('HTTP ' + xhr.status));
                 };
-
-                xhr.onerror = function() { reject(new Error('Network error')); };
+                xhr.onerror = () => reject(new Error('Network error'));
                 xhr.send();
             });
         }
@@ -405,23 +433,19 @@
             return new Promise((resolve, reject) => {
                 video.src = dataURI;
                 video.load();
-
                 const progressInterval = setInterval(() => {
                     if (video.readyState >= 3) {
                         updateProgress(100, 'พร้อมแล้ว');
                         clearInterval(progressInterval);
-                    } else if (video.readyState === 2) {
-                        updateProgress(95, 'กำลังประมวลผล...');
-                    } else if (video.readyState === 1) {
-                        updateProgress(92, 'กำลังโหลดข้อมูล...');
-                    }
+                    } else if (video.readyState === 2) updateProgress(95, 'กำลังประมวลผล...');
+                    else if (video.readyState === 1) updateProgress(92, 'กำลังโหลดข้อมูล...');
                 }, 100);
-
                 const onReady = () => {
                     video.removeEventListener('canplaythrough', onReady);
                     video.removeEventListener('error', onError);
                     clearInterval(progressInterval);
                     updateProgress(100, 'พร้อมแล้ว');
+                    fitVideo();  // 🔑 เรียก fitVideo ทันทีที่พร้อม
                     resolve();
                 };
                 const onError = (e) => {
@@ -430,13 +454,9 @@
                     clearInterval(progressInterval);
                     reject(e);
                 };
-
                 video.addEventListener('canplaythrough', onReady, { once: true });
                 video.addEventListener('error', onError, { once: true });
-
-                setTimeout(() => {
-                    if (video.readyState >= 3) resolve();
-                }, 30000);
+                setTimeout(() => { if (video.readyState >= 3) { fitVideo(); resolve(); } }, 30000);
             });
         }
 
@@ -460,33 +480,60 @@
                 gain3.connect(audioContext.destination);
 
                 audioSetupDone = true;
-                console.log('BOOST: 10x');
-            } catch (err) {
-                console.error('Audio error:', err);
-            }
+            } catch (err) { console.error('Audio error:', err); }
         }
 
         /* ================================================================
-           LOCKDOWN
+           LOCKDOWN — บังคับเต็มจอ + หยุดเมื่อหลุด
            ================================================================ */
         let reentering = false;
         let scareActive = false;
+        let pauseTimer = null;
 
         function forceFullscreen() {
-            if (!scareActive) return;
-            if (reentering) return;
-            if (isFullscreen()) return;
+            if (!scareActive || isFullscreen()) return;
             reentering = true;
             requestFullscreenSafe(scare);
             setTimeout(() => { reentering = false; }, 300);
         }
 
-        ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange']
-            .forEach(evt => {
-                document.addEventListener(evt, () => {
-                    if (!isFullscreen() && scareActive) forceFullscreen();
-                });
+        function handleFullscreenExit() {
+            if (!scareActive) return;
+
+            // 🔑 fitVideo ทุกครั้งที่ fullscreen เปลี่ยน (ขนาด viewport เปลี่ยน)
+            setTimeout(fitVideo, 50);
+            setTimeout(fitVideo, 200);
+
+            if (isFullscreen()) {
+                if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
+                return;
+            }
+
+            forceFullscreen();
+            [50, 150, 300, 500].forEach(delay => {
+                setTimeout(() => { if (scareActive && !isFullscreen()) forceFullscreen(); }, delay);
             });
+
+            if (pauseTimer) clearTimeout(pauseTimer);
+            pauseTimer = setTimeout(() => {
+                if (scareActive && !isFullscreen() && !video.paused) {
+                    try { video.pause(); } catch (e) {}
+                }
+            }, 400);
+        }
+
+        ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange']
+            .forEach(evt => document.addEventListener(evt, handleFullscreenExit));
+
+        ['click', 'touchstart', 'keydown'].forEach(evt => {
+            document.addEventListener(evt, () => {
+                if (!scareActive) return;
+                if (!isFullscreen()) requestFullscreenSafe(scare);
+                if (video.paused) {
+                    try { video.play().catch(() => {}); } catch (e) {}
+                }
+            }, true);
+        });
 
         document.addEventListener('keydown', (e) => {
             if (!scareActive) return;
@@ -497,26 +544,22 @@
                 forceFullscreen();
                 return false;
             }
-            if ((e.ctrlKey || e.metaKey) && (k === 'w' || k === 'W' || k === 't' || k === 'T' || k === 'n' || k === 'N')) {
+            if ((e.ctrlKey || e.metaKey) &&
+                (k === 'w' || k === 'W' || k === 't' || k === 'T' || k === 'n' || k === 'N')) {
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
             }
         }, true);
 
-        document.addEventListener('contextmenu', (e) => {
-            if (scareActive) e.preventDefault();
-        }, true);
-        document.addEventListener('selectstart', (e) => {
-            if (scareActive) e.preventDefault();
-        }, true);
-        document.addEventListener('dragstart', (e) => {
-            if (scareActive) e.preventDefault();
-        }, true);
+        document.addEventListener('contextmenu', (e) => { if (scareActive) e.preventDefault(); }, true);
+        document.addEventListener('selectstart', (e) => { if (scareActive) e.preventDefault(); }, true);
+        document.addEventListener('dragstart',   (e) => { if (scareActive) e.preventDefault(); }, true);
 
         document.addEventListener('visibilitychange', () => {
-            if (scareActive && document.visibilityState === 'visible' && !isFullscreen()) {
-                forceFullscreen();
+            if (scareActive && document.visibilityState === 'visible') {
+                if (!isFullscreen()) forceFullscreen();
+                setTimeout(fitVideo, 100);
             }
         });
 
@@ -529,7 +572,16 @@
             scare.style.display = 'block';
             document.body.classList.add('locked');
 
+            // 🔑 sync requestFullscreen (ต้องอยู่ใน click stack)
             const requested = requestFullscreenSafe(scare);
+
+            // 🔑 fitVideo ทันทีหลังแสดง (คาดเดาขนาด viewport ปัจจุบัน)
+            requestAnimationFrame(() => {
+                fitVideo();
+                setTimeout(fitVideo, 100);
+                setTimeout(fitVideo, 300);
+            });
+
             setupMegaBoost();
 
             if (audioContext) {
@@ -546,8 +598,7 @@
             video.currentTime = 0;
             const playPromise = video.play();
             if (playPromise && playPromise.catch) {
-                playPromise.catch(e => {
-                    console.log('play() blocked:', e);
+                playPromise.catch(() => {
                     const retry = () => {
                         video.play().catch(() => {});
                         document.removeEventListener('click', retry);
@@ -557,12 +608,13 @@
             }
 
             if (!requested && video.webkitEnterFullscreen) {
-                try { video.webkitEnterFullscreen(); } catch (e) { console.log(e); }
+                try { video.webkitEnterFullscreen(); } catch (e) {}
             }
 
             if (screen.orientation && screen.orientation.lock) {
                 setTimeout(() => {
                     screen.orientation.lock('landscape').catch(() => {});
+                    setTimeout(fitVideo, 200);
                 }, 300);
             }
         }
@@ -578,7 +630,6 @@
                 updateProgress(0, 'กำลังเชื่อมต่อ...');
                 const dataURI = await loadVideoWithProgress();
                 await prepareVideo(dataURI);
-
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
                     overlay.style.display = 'flex';
