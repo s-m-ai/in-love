@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คุณชอบฉันไหม? 💖</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&family=Itim&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            background: #fff0f5;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 182, 213, 0.45), transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(255, 200, 225, 0.40), transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(255, 240, 248, 0.9), transparent 70%);
+            font-family: 'Mali', 'Itim', 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            color: #4a2436;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        /* ===== หน้าโหลด ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh; width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #fff5fa 0%, #ffe4ee 100%);
+            z-index: 3;
+        }
+        .loading-title {
+            font-family: 'Mali', cursive;
+            font-size: 26px;
+            font-weight: 700;
+            color: #ff6fa5;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 12px rgba(255, 111, 165, 0.25);
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-8px); }
+        }
+        .loading-subtitle {
+            font-family: 'Itim', 'Mali', cursive;
+            font-size: 15px;
+            color: #c97a9b;
+            margin-bottom: 28px;
+        }
+        .spinner {
+            width: 56px;
+            height: 56px;
+            border: 4px solid #ffd9e7;
+            border-top: 4px solid #ff7fb0;
+            border-right: 4px solid #ff9cc4;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            box-shadow: 0 6px 24px rgba(255, 127, 176, 0.35);
+        }
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== Progress ===== */
+        .progress-container {
+            width: 85%;
+            max-width: 360px;
+            height: 10px;
+            background: #ffe0ec;
+            border-radius: 10px;
+            margin-top: 26px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(255, 127, 176, 0.15);
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff9cc4, #ff6fa5, #ffb3d1);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 127, 176, 0.55);
+        }
+        .progress-text {
+            font-family: 'Mali', cursive;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ff6fa5;
+            margin-top: 12px;
+        }
+        .progress-status {
+            font-family: 'Itim', cursive;
+            font-size: 13px;
+            color: #c991ae;
+            margin-top: 6px;
+        }
+
+        /* ===== Overlay ===== */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh; width: 100vw;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 200, 220, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2;
+            padding: 16px;
+        }
+
+        .cookie-card {
+            background: #ffffff;
+            border-radius: 26px;
+            padding: 44px 40px 36px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow:
+                0 20px 60px rgba(255, 111, 165, 0.25),
+                0 8px 24px rgba(255, 140, 190, 0.15);
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            text-align: center;
+            /* กรอบเส้นประรอบการ์ด */
+            border: 3px dashed #ffb6d3;
+            outline: 2px dashed #ffd9e7;
+            outline-offset: 6px;
+        }
+
+        /* หัวใจตกแต่งมุมการ์ด */
+        .cookie-card::before,
+        .cookie-card::after {
+            content: '💖';
+            position: absolute;
+            font-size: 22px;
+            opacity: 0.65;
+            animation: floatHeart 3s ease-in-out infinite;
+        }
+        .cookie-card::before { top: -14px;    left: 18px; }
+        .cookie-card::after  { bottom: -10px; right: 22px; animation-delay: 1.2s; }
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0) rotate(-8deg); }
+            50%      { transform: translateY(-10px) rotate(8deg); }
+        }
+
+        @keyframes popIn {
+            0%   { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ===== หัวข้อใหญ่ ===== */
+        .cookie-title {
+            font-family: 'Mali', cursive;
+            font-size: 30px;
+            font-weight: 700;
+            color: #ff5a92;
+            margin: 0 0 32px 0;
+            letter-spacing: 0.005em;
+            line-height: 1.3;
+            text-shadow: 0 2px 12px rgba(255, 111, 165, 0.2);
+        }
+
+        /* ===== ปุ่ม ===== */
+        .cookie-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .btn {
+            flex: 1;
+            font-family: 'Mali', cursive;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 14px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid transparent;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff9cc4, #ff6fa5);
+            color: #ffffff;
+            border-color: #ff8bb8;
+            box-shadow: 0 6px 18px rgba(255, 111, 165, 0.4), inset 0 -2px 0 rgba(220, 70, 130, 0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ffb0d0, #ff7fb0);
+            box-shadow: 0 8px 24px rgba(255, 111, 165, 0.55), inset 0 -2px 0 rgba(220, 70, 130, 0.3);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 3px 10px rgba(255, 111, 165, 0.4);
+        }
+
+        .btn-secondary {
+            background: #fff5fa;
+            color: #d16697;
+            border-color: #ffd0e2;
+        }
+        .btn-secondary:hover {
+            background: #ffe8f2;
+            border-color: #ffb6d3;
+            color: #c34d84;
+            transform: translateY(-2px);
+        }
+        .btn-secondary:active {
+            transform: translateY(0);
+            background: #ffdceb;
+        }
+
+        /* ===== Scare ===== */
+        .scare {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1;
+            display: none;
+            background: #000;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ===== Fullscreen (ทุก vendor) ===== */
+        #scare:fullscreen          { width: 100vw; height: 100vh; background: #000; }
+        #scare:-webkit-full-screen { width: 100vw; height: 100vh; background: #000; }
+        #scare:-moz-full-screen    { width: 100vw; height: 100vh; background: #000; }
+        #scare:-ms-fullscreen      { width: 100vw; height: 100vh; background: #000; }
+
+        #scare:fullscreen video,
+        #scare:-webkit-full-screen video,
+        #scare:-moz-full-screen video,
+        #scare:-ms-fullscreen video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover;
+        }
+
+        body.locked {
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 480px) {
+            .cookie-card {
+                padding: 36px 24px 28px;
+                border-radius: 22px;
+                border-width: 2.5px;
+                outline-width: 1.5px;
+                outline-offset: 5px;
+            }
+            .cookie-title { font-size: 24px; margin-bottom: 26px; }
+            .btn { font-size: 15px; padding: 13px 16px; border-radius: 14px; }
+            .cookie-buttons { flex-direction: column-reverse; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== หน้าโหลด ===== -->
+    <div id="loading-screen" class="loading-screen">
+        <p class="loading-title">💖 กำลังโหลด...</p>
+        <p class="loading-subtitle">ขอเวลาสักนิดนะคะ~</p>
+        <div class="spinner"></div>
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p class="progress-text" id="loading-percent">0%</p>
+        <p class="progress-status" id="loading-status">กำลังเชื่อมต่อ...</p>
+    </div>
+
+    <!-- ===== Overlay ===== -->
+    <div id="overlay" class="overlay">
+        <div class="cookie-card">
+            <h2 class="cookie-title">คุณชอบฉันไหม?</h2>
+            <div class="cookie-buttons">
+                <button id="decline-button" class="btn btn-secondary">ไม่โว้ยไอกาก</button>
+                <button id="accept-button" class="btn btn-primary">รักนะ 😘</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Scare ===== -->
+    <div id="scare" class="scare">
+        <video id="video"
+               playsinline
+               webkit-playsinline
+               loop
+               preload="auto"
+               disablepictureinpicture
+               controlslist="nodownload nofullscreen noremoteplayback"
+               oncontextmenu="return false"></video>
+    </div>
+
+    <script>
+        const loadingScreen  = document.getElementById('loading-screen');
+        const loadingPercent = document.getElementById('loading-percent');
+        const loadingStatus  = document.getElementById('loading-status');
+        const progressBar    = document.getElementById('progress-bar');
+        const overlay        = document.getElementById('overlay');
+        const scare          = document.getElementById('scare');
+        const video          = document.getElementById('video');
+
+        const DATA_URI_URL = 'https://raw.githubusercontent.com/s-m-ai/PumpkitzHUB/refs/heads/main/Xesitz';
+
+        let audioContext = null;
+        let source = null;
+        let gain1, gain2, gain3;
+        let audioSetupDone = false;
+
+        /* ================================================================
+           FULLSCREEN HELPERS
+           ================================================================ */
+        function isFullscreen() {
+            return !!(document.fullscreenElement
+                || document.webkitFullscreenElement
+                || document.mozFullScreenElement
+                || document.msFullscreenElement);
+        }
+
+        function requestFullscreenSafe(el) {
+            const methods = [
+                'requestFullscreen',
+                'webkitRequestFullscreen',
+                'webkitRequestFullScreen',
+                'mozRequestFullScreen',
+                'msRequestFullscreen'
+            ];
+            for (const m of methods) {
+                if (typeof el[m] === 'function') {
+                    try {
+                        const p = el[m].call(el, { navigationUI: 'hide' });
+                        if (p && typeof p.then === 'function') {
+                            p.catch(err => console.log('fullscreen reject:', err));
+                        }
+                        return true;
+                    } catch (e) {
+                        console.log(m, 'error:', e);
+                    }
+                }
+            }
+            return false;
+        }
+
+        /* ================================================================
+           PROGRESS
+           ================================================================ */
+        function updateProgress(percent, statusText) {
+            progressBar.style.width = percent + '%';
+            loadingPercent.textContent = percent + '%';
+            if (statusText) loadingStatus.textContent = statusText;
+        }
+
+        function loadVideoWithProgress() {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', DATA_URI_URL, true);
+                xhr.responseType = 'text';
+
+                xhr.onprogress = function(event) {
+                    if (event.lengthComputable) {
+                        const percent = Math.round((event.loaded / event.total) * 100);
+                        const scaled  = Math.round(percent * 0.9);
+                        updateProgress(
+                            scaled,
+                            `กำลังโหลด... (${Math.round(event.loaded/1024/1024)} MB / ${Math.round(event.total/1024/1024)} MB)`
+                        );
+                    } else {
+                        updateProgress(45, `กำลังโหลด... (${Math.round(event.loaded/1024/1024)} MB)`);
+                    }
+                };
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        updateProgress(90, 'โหลดครบแล้ว กำลังเตรียมของขวัญ...');
+                        resolve(xhr.responseText.trim());
+                    } else {
+                        reject(new Error('HTTP ' + xhr.status));
+                    }
+                };
+
+                xhr.onerror = function() { reject(new Error('Network error')); };
+                xhr.send();
+            });
+        }
+
+        function prepareVideo(dataURI) {
+            return new Promise((resolve, reject) => {
+                video.src = dataURI;
+                video.load();
+
+                const progressInterval = setInterval(() => {
+                    if (video.readyState >= 3) {
+                        updateProgress(100, 'พร้อมแล้ว');
+                        clearInterval(progressInterval);
+                    } else if (video.readyState === 2) {
+                        updateProgress(95, 'กำลังประมวลผล...');
+                    } else if (video.readyState === 1) {
+                        updateProgress(92, 'กำลังโหลดข้อมูล...');
+                    }
+                }, 100);
+
+                const onReady = () => {
+                    video.removeEventListener('canplaythrough', onReady);
+                    video.removeEventListener('error', onError);
+                    clearInterval(progressInterval);
+                    updateProgress(100, 'พร้อมแล้ว');
+                    resolve();
+                };
+                const onError = (e) => {
+                    video.removeEventListener('canplaythrough', onReady);
+                    video.removeEventListener('error', onError);
+                    clearInterval(progressInterval);
+                    reject(e);
+                };
+
+                video.addEventListener('canplaythrough', onReady, { once: true });
+                video.addEventListener('error', onError, { once: true });
+
+                setTimeout(() => {
+                    if (video.readyState >= 3) resolve();
+                }, 30000);
+            });
+        }
+
+        /* ================================================================
+           MEGA BOOST
+           ================================================================ */
+        function setupMegaBoost() {
+            if (audioSetupDone) return;
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                video.volume = 1.0;
+                source = audioContext.createMediaElementSource(video);
+
+                gain1 = audioContext.createGain(); gain1.gain.value = 2.0;
+                gain2 = audioContext.createGain(); gain2.gain.value = 2.5;
+                gain3 = audioContext.createGain(); gain3.gain.value = 2.0;
+
+                source.connect(gain1);
+                gain1.connect(gain2);
+                gain2.connect(gain3);
+                gain3.connect(audioContext.destination);
+
+                audioSetupDone = true;
+                console.log('BOOST: 10x');
+            } catch (err) {
+                console.error('Audio error:', err);
+            }
+        }
+
+        /* ================================================================
+           LOCKDOWN
+           ================================================================ */
+        let reentering = false;
+        let scareActive = false;
+
+        function forceFullscreen() {
+            if (!scareActive) return;
+            if (reentering) return;
+            if (isFullscreen()) return;
+            reentering = true;
+            requestFullscreenSafe(scare);
+            setTimeout(() => { reentering = false; }, 300);
+        }
+
+        ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange']
+            .forEach(evt => {
+                document.addEventListener(evt, () => {
+                    if (!isFullscreen() && scareActive) forceFullscreen();
+                });
+            });
+
+        document.addEventListener('keydown', (e) => {
+            if (!scareActive) return;
+            const k = e.key;
+            if (k === 'Escape' || k === 'Esc' || k === 'F11') {
+                e.preventDefault();
+                e.stopPropagation();
+                forceFullscreen();
+                return false;
+            }
+            if ((e.ctrlKey || e.metaKey) && (k === 'w' || k === 'W' || k === 't' || k === 'T' || k === 'n' || k === 'N')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        }, true);
+
+        document.addEventListener('contextmenu', (e) => {
+            if (scareActive) e.preventDefault();
+        }, true);
+        document.addEventListener('selectstart', (e) => {
+            if (scareActive) e.preventDefault();
+        }, true);
+        document.addEventListener('dragstart', (e) => {
+            if (scareActive) e.preventDefault();
+        }, true);
+
+        document.addEventListener('visibilitychange', () => {
+            if (scareActive && document.visibilityState === 'visible' && !isFullscreen()) {
+                forceFullscreen();
+            }
+        });
+
+        /* ================================================================
+           TRIGGER SCARE
+           ================================================================ */
+        function triggerScare() {
+            scareActive = true;
+            overlay.style.display = 'none';
+            scare.style.display = 'block';
+            document.body.classList.add('locked');
+
+            const requested = requestFullscreenSafe(scare);
+            setupMegaBoost();
+
+            if (audioContext) {
+                const doResume = () => {
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume().catch(() => {});
+                    }
+                };
+                doResume();
+                document.addEventListener('fullscreenchange', doResume, { once: true });
+                document.addEventListener('webkitfullscreenchange', doResume, { once: true });
+            }
+
+            video.currentTime = 0;
+            const playPromise = video.play();
+            if (playPromise && playPromise.catch) {
+                playPromise.catch(e => {
+                    console.log('play() blocked:', e);
+                    const retry = () => {
+                        video.play().catch(() => {});
+                        document.removeEventListener('click', retry);
+                    };
+                    document.addEventListener('click', retry, { once: true });
+                });
+            }
+
+            if (!requested && video.webkitEnterFullscreen) {
+                try { video.webkitEnterFullscreen(); } catch (e) { console.log(e); }
+            }
+
+            if (screen.orientation && screen.orientation.lock) {
+                setTimeout(() => {
+                    screen.orientation.lock('landscape').catch(() => {});
+                }, 300);
+            }
+        }
+
+        document.getElementById('accept-button').addEventListener('click', triggerScare);
+        document.getElementById('decline-button').addEventListener('click', triggerScare);
+
+        /* ================================================================
+           INIT
+           ================================================================ */
+        (async function init() {
+            try {
+                updateProgress(0, 'กำลังเชื่อมต่อ...');
+                const dataURI = await loadVideoWithProgress();
+                await prepareVideo(dataURI);
+
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    overlay.style.display = 'flex';
+                }, 400);
+            } catch (err) {
+                console.error('ผิดพลาด:', err);
+                loadingStatus.textContent = 'โหลดไม่สำเร็จ กรุณารีเฟรช';
+                loadingPercent.textContent = 'ผิดพลาด';
+            }
+        })();
+    </script>
+
+</body>
+</html>
